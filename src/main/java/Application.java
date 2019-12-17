@@ -6,15 +6,20 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Application {
 
     public static void main(String[] args) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+        InetSocketAddress address = new InetSocketAddress(8000);
+        HttpServer server = HttpServer.create(address, 0);
         server.createContext("/test", new MyHandler(objectMapper));
-        server.setExecutor(null); // creates a default executor
+        server.setExecutor(executorService); // creates a default executor
+        System.out.println(String.format("Starting web server on %s ...", address));
         server.start();
     }
 
@@ -28,9 +33,8 @@ public class Application {
         @Override
         public void handle(HttpExchange t) throws IOException {
             OutputStream os = t.getResponseBody();
-            final String response = this.objectMapper.writeValueAsString(new Person("soroosh", "sorooshi"));
-            t.sendResponseHeaders(200, response.getBytes().length);
-            os.write(response.getBytes());
+            t.sendResponseHeaders(200, 0);
+            this.objectMapper.writeValue(os, new Person("soroosh", "sorooshi"));
             os.close();
         }
     }
