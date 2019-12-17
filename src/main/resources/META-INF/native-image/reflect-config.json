@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Person",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  }
+]
