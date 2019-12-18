@@ -62,6 +62,7 @@
                 <configuration>
                     <mainClass>Application</mainClass>
                     <buildArgs>
+                        --static
                         --no-fallback
                     </buildArgs>
                 </configuration>
